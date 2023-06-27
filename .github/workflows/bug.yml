@@ -1,0 +1,23 @@
+name: Demonstrate bug
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install -r requirements.txt
+      - run: python -c "import numpy; print(numpy.show_runtime())"
+      - run: pytest -sv test.py
